@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Tasbeeh | المسبحة الرقمية</title>
+  <meta name="description" content="A beautiful digital tasbeeh counter for dhikr and spiritual focus." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ========== LANDING PAGE ========== -->
+  <section id="landing" class="page active">
+    <div class="landing-bg"></div>
+    <div class="geometric-overlay"></div>
+    <div class="landing-content">
+      <div class="logo-icon">☽</div>
+      <h1 class="app-title">المسبحة الرقمية</h1>
+      <p class="app-subtitle">Digital Tasbeeh</p>
+      <p class="app-desc">A moment of peace and remembrance</p>
+      <button id="startBtn" class="start-btn" onclick="showTasbeeh()">
+        <span class="btn-arabic">ابدأ المسبحة</span>
+        <span class="btn-english">Start Tasbeeh</span>
+      </button>
+    </div>
+    <div class="floating-particles" id="particles"></div>
+  </section>
+
+  <!-- ========== TASBEEH PAGE ========== -->
+  <section id="tasbeeh" class="page">
+    <div class="tasbeeh-bg"></div>
+    <header class="tasbeeh-header">
+      <button id="backBtn" class="icon-btn" onclick="showLanding()" title="Back">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <h2 class="page-title">المسبحة</h2>
+      <button id="soundToggle" class="icon-btn" onclick="toggleSound()" title="Toggle Sound">
+        <svg id="soundOn" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+        <svg id="soundOff" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      </button>
+    </header>
+
+    <!-- Preset Dhikr Selector -->
+    <div class="preset-bar">
+      <button class="preset-btn active" data-dhikr="subhanallah" onclick="selectDhikr(this)">سبحان الله</button>
+      <button class="preset-btn" data-dhikr="alhamdulillah" onclick="selectDhikr(this)">الحمد لله</button>
+      <button class="preset-btn" data-dhikr="allahuakbar" onclick="selectDhikr(this)">الله أكبر</button>
+      <button class="preset-btn" data-dhikr="lailaha" onclick="selectDhikr(this)">لا إله إلا الله</button>
+      <button class="preset-btn" data-dhikr="lahawla" onclick="selectDhikr(this)">لا حول ولا قوة إلا بالله</button>
+      <button class="preset-btn" data-dhikr="astaghfir" onclick="selectDhikr(this)">أستغفر الله</button>
+      <button class="preset-btn" data-dhikr="salawat" onclick="selectDhikr(this)">اللهم صلِّ على النبي</button>
+    </div>
+
+    <!-- Counter Display -->
+    <div class="counter-area">
+      <div class="counter-ring">
+        <svg class="progress-ring" viewBox="0 0 260 260">
+          <circle class="ring-bg" cx="130" cy="130" r="120" />
+          <circle class="ring-fill" id="progressRing" cx="130" cy="130" r="120" />
+        </svg>
+        <div class="counter-inner">
+          <div class="counter-number" id="counterDisplay">0</div>
+          <div class="counter-label" id="currentDhikr">سبحان الله</div>
+        </div>
+      </div>
+
+      <button id="tasbeehBtn" class="tasbeeh-btn" onclick="incrementCounter()">
+        <span class="btn-text">تسبيح</span>
+      </button>
+
+      <div class="controls">
+        <button id="resetBtn" class="control-btn reset" onclick="resetCounter()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 105.64-11.36L3 10"/></svg>
+          <span>إعادة</span>
+        </button>
+        <div class="total-count">
+          <span class="total-label">المجموع الكلي</span>
+          <span class="total-number" id="totalCount">0</span>
+        </div>
+        <button id="globalResetBtn" class="control-btn global-reset" onclick="resetAll()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 105.64-11.36L3 10"/></svg>
+          <span>مسح الكل</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- All Counters Summary -->
+    <div class="summary-scroll">
+      <div class="summary-bar">
+        <div class="summary-item">
+          <span class="summary-name">سبحان الله</span>
+          <span class="summary-count" id="count-subhanallah">0</span>
+          <button class="summary-reset" onclick="resetOne('subhanallah')" title="Reset">✕</button>
+        </div>
+        <div class="summary-item">
+          <span class="summary-name">الحمد لله</span>
+          <span class="summary-count" id="count-alhamdulillah">0</span>
+          <button class="summary-reset" onclick="resetOne('alhamdulillah')" title="Reset">✕</button>
+        </div>
+        <div class="summary-item">
+          <span class="summary-name">الله أكبر</span>
+          <span class="summary-count" id="count-allahuakbar">0</span>
+          <button class="summary-reset" onclick="resetOne('allahuakbar')" title="Reset">✕</button>
+        </div>
+        <div class="summary-item">
+          <span class="summary-name">لا إله إلا الله</span>
+          <span class="summary-count" id="count-lailaha">0</span>
+          <button class="summary-reset" onclick="resetOne('lailaha')" title="Reset">✕</button>
+        </div>
+        <div class="summary-item">
+          <span class="summary-name">لا حول ولا قوة إلا بالله</span>
+          <span class="summary-count" id="count-lahawla">0</span>
+          <button class="summary-reset" onclick="resetOne('lahawla')" title="Reset">✕</button>
+        </div>
+        <div class="summary-item">
+          <span class="summary-name">أستغفر الله</span>
+          <span class="summary-count" id="count-astaghfir">0</span>
+          <button class="summary-reset" onclick="resetOne('astaghfir')" title="Reset">✕</button>
+        </div>
+        <div class="summary-item">
+          <span class="summary-name">اللهم صلِّ على النبي</span>
+          <span class="summary-count" id="count-salawat">0</span>
+          <button class="summary-reset" onclick="resetOne('salawat')" title="Reset">✕</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
